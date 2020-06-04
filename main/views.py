@@ -11,6 +11,11 @@ def load_dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
+def view_list(request, id):
+    context = {
+        'user' : User.objects.get(id=request.session['user_id'])
+    }
+    return render(request, 'view_list.html', context)
 
 # login reg functions
 def process_login(request):
@@ -31,5 +36,11 @@ def process_register(request):
     else:
         return redirect('/')
 
-def fail_logreg(request):
-    return redirect('/')
+# list functions
+def create_list(request):
+    current_user = User.objects.get(id=request.session['user_id'])
+    new_list = TaskList.objects.create(name=request.POST['name'], icon=request.POST['icon'], created_by=current_user)
+    redirect('/dashboard')
+
+def add_listItem(request):
+    redirect('/dashboard')

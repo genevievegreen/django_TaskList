@@ -34,24 +34,13 @@
         <ul class="list-unstyled components">
             <p>Welcome {{ user.first_name }}</p>
             <li class="active">
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-                    <li>
-                        <a href="#">Home 1</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 2</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 3</a>
-                    </li>
-                </ul>
+                <a href="#">Home</a>
             </li>
             <li>
-                <a href="#">About</a>
+                <a href="#"><i class="fas fa-shopping-basket"></i><span id="span">Grocery List</span></a>
             </li>
             <li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-stream"></i><span id="span">My Lists</span></a>
                 <ul class="collapse list-unstyled" id="pageSubmenu">
                     <li>
                         <a href="#">Page 1</a>
@@ -83,11 +72,10 @@
     <div class="max-width container-fluid" id="content">
 
         <!--Nav Toggle Button-->
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <button type="button" id="sidebarCollapse" class="btn btn-info">
+        <nav class="navbar navbar-expand-lg navbar-dark" id="topnavbar">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info rounded-circle">
                     <i class="fas fa-align-left"></i>
-                    <span>Toggle Sidebar</span>
                 </button>
             </div>
         </nav>
@@ -100,15 +88,103 @@
             </div>
 
 
+            <div class="row">
+                <!--Display are for all Lists-->
+                <div class="container col-9" id="all_lists">
+                    <div class="card-columns">
+
+                        <!--Each Card-->
+                        {% for list in all_lists %}
+                        <div class="card" style="width: 14rem;">
+                            <div class="card-body">
+                                <!--List Name-->
+                                <h5 class="card-title">{{ list.name }}</h5>
+                                <!--List items-->
+                                <ul class="list-group">
+                                    {% for item in list.items %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-8"> <!--item.isCompleted - ListItem name-->
+                                                {% if item.isCompleted %}
+                                                <i class="fas fa-check-circle"></i>
+                                                {% else %}
+                                                <i class="far fa-circle"></i>
+                                                {% endif %}
+                                                {{ item.name }}
+                                            </div>
+                                            <div class="col-2"> <!--due date if it exists-->
+                                                {% if item.due_date %}
+                                                <span class="text-muted text-right">{{ item.due_date | date:'M-d-Y' }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                    <!--add item list input-->
+                                    <li class="list-group-item">
+                                        <form action="/add_listItem/" method="POST">
+                                            {% csrf_token %}
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="new_item" placeholder="Enter new item...">
+                                                <input type="date" name="date">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-success" type="submit"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </li>  
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+
+                
+
+                <!--Create List Card-->
+                <div class="container col-3" id="add_a_list">
+                    <div class="card text-white bg-dark mb-3 border-secondary">
+                        <form action="/create_list/" method="POST">
+                            <div class="card-body">
+                                <!--List Name--> 
+                                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" name="name" placeholder="New List">
+                                <!--Icon Choice-->
+                                <div class="container text-center">
+                                    <label for="icon_choice" class="text-center">Choose Icon: </label>
+                                    <div class="container form-group text-center" id="icon_choice">
+                                        
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="icon" id="starIcon" value="fas fa-star" checked>
+                                            <label class="form-check-label" for="starIcon"> <i class="fas fa-star"></i> </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="icon" id="bookmarkIcon" value="fas fa-bookmark" >
+                                            <label class="form-check-label" for="bookmarkIcon"> <i class="fas fa-bookmark"></i> </label>
+                                        </div>    
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="icon" id="heartIcon" value="fas fa-heart" >
+                                            <label class="form-check-label" for="heartIcon"> <i class="fas fa-heart"></i> </label>
+                                        </div>  
+                                    </div>
+                                </div>   
+                                <!--Submit Button-->
+                                <div class="container text-center">
+                                    <button type="submit" class="btn btn-outline-secondary btn-dark">Create</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+                
 
 
 
-        </div>
 
-
-
-
-
+        </div>  <!--closing div for main content-->
     </div> <!--closing div for content-->
 </div>  <!--Closing div for wrapper-->
 
